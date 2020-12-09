@@ -6,7 +6,7 @@ import (
 )
 
 func TestPart1(t *testing.T) {
-	got := part1(testReader)
+	got := part1(strings.NewReader(testData))
 	want := 3434390
 	if got != want {
 		t.Fatalf("expected %d got %d\n", want, got)
@@ -14,14 +14,14 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
-	got := part2(testReader)
+	got := part2(strings.NewReader(testData))
 	want := 5148724
 	if got != want {
 		t.Fatalf("expected %d got %d\n", want, got)
 	}
 }
 
-var testReader = strings.NewReader(`98541
+const testData = `98541
 129056
 134974
 66390
@@ -120,4 +120,4 @@ var testReader = strings.NewReader(`98541
 121996
 94172
 128023
-123472`)
+123472`
