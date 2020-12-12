@@ -17,28 +17,39 @@ const (
 	finished codeType = 99
 )
 
+type instruction struct {
+	code codeType
+	// parameters is expected to be length 3 for the three params
+	parameters []int
+}
+
+type program struct {
+	data         []int
+	instructions []instruction
+}
+
 func main() {
 	fmt.Printf("Part 1: %d\n", part1(common.OpenArgsFile()))
 	fmt.Printf("Part 2: %d\n", part2(common.OpenArgsFile()))
 }
 
 func part1(reader io.Reader) int {
-	program := loadProgram(reader)
-	program[1] = 12
-	program[2] = 2
-	return executePart1(program)
+	intCodes := loadIntCodes(reader)
+	intCodes[1] = 12
+	intCodes[2] = 2
+	return execute(intCodes)
 }
 
-func executePart1(program []int) int {
+func execute(intCodes []int) int {
 	i := 0
 Loop:
 	for {
-		switch codeType(program[i]) {
+		switch codeType(intCodes[i]) {
 		case add:
-			program[program[i+3]] = program[program[i+1]] + program[program[i+2]]
+			intCodes[intCodes[i+3]] = intCodes[intCodes[i+1]] + intCodes[intCodes[i+2]]
 			i += 4
 		case multiply:
-			program[program[i+3]] = program[program[i+1]] * program[program[i+2]]
+			intCodes[intCodes[i+3]] = intCodes[intCodes[i+1]] * intCodes[intCodes[i+2]]
 			i += 4
 		case finished:
 			break Loop
@@ -47,15 +58,55 @@ Loop:
 		}
 	}
 
-	return program[0]
+	return intCodes[0]
 }
 
 func part2(reader io.Reader) int {
-	// TODO: implement me
+	codes := loadIntCodes(reader)
+
+	for noun := 0; noun <= 99; noun++ {
+		for verb := 0; verb <= 99; verb++ {
+			codesCopy := make([]int, len(codes))
+			copy(codesCopy, codes)
+			codesCopy[1] = noun
+			codesCopy[2] = verb
+			result := execute(codesCopy)
+			if result == 19690720 {
+				return 100*noun + verb
+			}
+		}
+	}
+
 	return -1
 }
 
-func loadProgram(reader io.Reader) []int {
+func loadProgram(ints []int) program {
+	var instructions []instruction
+	i := 0
+	for i < len(ints) {
+
+		code := codeType(ints[i])
+		next := instruction{
+			code: code,
+		}
+		instructions = append(instructions, next)
+
+		if code == finished {
+			break
+		}
+
+		// any non-finished codes have parameters
+		next.parameters = ints[i+1 : i+4]
+		i += 4
+	}
+
+	return program{
+		data:         ints,
+		instructions: instructions,
+	}
+}
+
+func loadIntCodes(reader io.Reader) []int {
 	fields := bytes.Split(common.ReadAll(reader), []byte(","))
 	var intCodes []int
 	for _, val := range fields {
