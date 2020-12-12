@@ -13,7 +13,8 @@ const (
 
 func TestPart1(t *testing.T) {
 	t.Parallel()
-	got := execute(loadIntCodes(common.OpenFile("../test-input.txt")))
+	prog := loadProgram(loadIntCodes(common.OpenFile("../test-input.txt")))
+	got := prog.execute()
 	want := expectedPart1
 	if got != want {
 		t.Fatalf("expected %d got %d\n", want, got)

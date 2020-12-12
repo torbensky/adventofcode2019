@@ -37,40 +37,34 @@ func part1(reader io.Reader) int {
 	intCodes := loadIntCodes(reader)
 	intCodes[1] = 12
 	intCodes[2] = 2
-	return execute(intCodes)
+	return loadProgram(intCodes).execute()
 }
 
-func execute(intCodes []int) int {
-	i := 0
-Loop:
-	for {
-		switch codeType(intCodes[i]) {
+func (p program) execute() int {
+	for _, ins := range p.instructions {
+		switch ins.code {
 		case add:
-			intCodes[intCodes[i+3]] = intCodes[intCodes[i+1]] + intCodes[intCodes[i+2]]
-			i += 4
+			p.data[ins.parameters[2]] = p.data[ins.parameters[0]] + p.data[ins.parameters[1]]
 		case multiply:
-			intCodes[intCodes[i+3]] = intCodes[intCodes[i+1]] * intCodes[intCodes[i+2]]
-			i += 4
+			p.data[ins.parameters[2]] = p.data[ins.parameters[0]] * p.data[ins.parameters[1]]
 		case finished:
-			break Loop
+			return p.data[0]
 		default:
-			log.Fatalf("unknown code encountered: %d\n", i)
+			log.Fatalf("unknown code encountered: %d\n", ins.code)
 		}
 	}
-
-	return intCodes[0]
+	return -1
 }
 
 func part2(reader io.Reader) int {
 	codes := loadIntCodes(reader)
-
 	for noun := 0; noun <= 99; noun++ {
 		for verb := 0; verb <= 99; verb++ {
 			codesCopy := make([]int, len(codes))
 			copy(codesCopy, codes)
 			codesCopy[1] = noun
 			codesCopy[2] = verb
-			result := execute(codesCopy)
+			result := loadProgram(codesCopy).execute()
 			if result == 19690720 {
 				return 100*noun + verb
 			}
@@ -89,14 +83,15 @@ func loadProgram(ints []int) program {
 		next := instruction{
 			code: code,
 		}
-		instructions = append(instructions, next)
 
 		if code == finished {
+			instructions = append(instructions, next)
 			break
 		}
 
 		// any non-finished codes have parameters
 		next.parameters = ints[i+1 : i+4]
+		instructions = append(instructions, next)
 		i += 4
 	}
 
