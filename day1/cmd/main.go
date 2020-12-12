@@ -4,15 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
-	"os"
 	"strconv"
+
+	"github.com/torbensky/adventofcode2019/common"
 )
 
 func main() {
-
-	fmt.Printf("Part 1: %d\n", part1(openInputFile()))
-	fmt.Printf("Part 2: %d\n", part2(openInputFile()))
+	fmt.Printf("Part 1: %d\n", part1(common.OpenArgsFile()))
+	fmt.Printf("Part 2: %d\n", part2(common.OpenArgsFile()))
 }
 
 func processData(reader io.Reader, calcFn func(mass int)) {
@@ -21,12 +20,12 @@ func processData(reader io.Reader, calcFn func(mass int)) {
 		line := scanner.Text()
 
 		mass, err := strconv.Atoi(line)
-		mustNotError(err)
+		common.MustNotError(err)
 		calcFn(mass)
 	}
 
 	err := scanner.Err()
-	mustNotError(err)
+	common.MustNotError(err)
 
 }
 
@@ -63,16 +62,4 @@ func calcModuleFuel(mass int) int {
 		return 0
 	}
 	return fuel
-}
-
-func openInputFile() *os.File {
-	file, err := os.Open(os.Args[1])
-	mustNotError(err)
-	return file
-}
-
-func mustNotError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
 }
