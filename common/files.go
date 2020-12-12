@@ -1,6 +1,8 @@
 package common
 
 import (
+	"io"
+	"io/ioutil"
 	"os"
 )
 
@@ -14,4 +16,11 @@ func OpenFile(path string) *os.File {
 	file, err := os.Open(path)
 	MustNotError(err)
 	return file
+}
+
+// ReadAll reads all data from the reader, or fatally errors if unable
+func ReadAll(reader io.Reader) []byte {
+	data, err := ioutil.ReadAll(reader)
+	MustNotError(err)
+	return data
 }
