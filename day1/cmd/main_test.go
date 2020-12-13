@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/torbensky/adventofcode2019/common"
+	common "github.com/torbensky/adventofcode-common"
 )
 
 func TestPart1(t *testing.T) {

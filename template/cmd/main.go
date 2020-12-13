@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/torbensky/adventofcode2019/common"
+	common "github.com/torbensky/adventofcode-common"
 )
 
 func main() {
-	fmt.Printf("Part 1: %d\n", part1(common.OpenArgsFile()))
-	fmt.Printf("Part 2: %d\n", part2(common.OpenArgsFile()))
+	fmt.Printf("Part 1: %d\n", part1(common.OpenInputFile()))
+	fmt.Printf("Part 2: %d\n", part2(common.OpenInputFile()))
 }
 
 func part1(reader io.Reader) int {

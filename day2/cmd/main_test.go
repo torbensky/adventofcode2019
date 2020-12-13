@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/torbensky/adventofcode2019/common"
+	common "github.com/torbensky/adventofcode-common"
 )
 
 const (
